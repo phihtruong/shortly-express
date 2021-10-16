@@ -4,6 +4,7 @@ const utils = require('./lib/hashUtils');
 const partials = require('express-partials');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const Cookie = require('./middleware/cookieParser');
 
 const app = express();
 
@@ -13,8 +14,8 @@ app.use(partials());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
-
-
+app.use(Cookie);
+app.use(Auth.createSession);
 
 app.get('/',
   (req, res) => {
@@ -85,7 +86,7 @@ app.post('/login', (req, res, next) => {
   return models.Users.get({ username })
     .then((user) => {
       if (!user || !models.Users.compare(password, user.password, user.salt)) {
-        console.log('error username or password does not match');
+        //console.log('error username or password does not match');
         throw new Error;
       }
       return models.Sessions.create();
