@@ -89,7 +89,7 @@ app.post('/login', (req, res, next) => {
         //console.log('error username or password does not match');
         throw new Error;
       }
-      return models.Sessions.create();
+      return Auth.createSession(req, res, next);
     })
     .then(() => {
       res.redirect('/');
@@ -106,6 +106,7 @@ app.post('/login', (req, res, next) => {
 app.post('/signup', (req, res, next) => {
   let username = req.body.username;
   let password = req.body.password;
+  // console.log('bob: ', username);
   // console.log('get from Users table...: ', models.Users.get({ username }));
   return models.Users.get({ username })
     .then(user => {
@@ -116,9 +117,14 @@ app.post('/signup', (req, res, next) => {
       }
     })
     .then(() => {
-      return models.Sessions.create();
+      return Auth.createSession(req, res, () => res.set('set-cookie', res.cookies.shortlyid.value));
+      // res.send(res.cookies.shortlyid.value);
+      // res.cookie('shortlyid', res.cookies.shortlyid.value, { domain: 'localhost' });
+      // });
+
     })
     .then(() => {
+      // console.log('res');
       res.redirect('/');
     })
     .error(err => {
@@ -126,6 +132,7 @@ app.post('/signup', (req, res, next) => {
     })
     .catch(user => {
       res.redirect('/signup');
+
     });
 });
 

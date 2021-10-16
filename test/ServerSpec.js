@@ -378,6 +378,7 @@ describe('', function () {
 
         createSession(requestWithoutCookies, response, function () {
           var session = requestWithoutCookies.session;
+          // console.log('session in test', requestWithoutCookies);
           expect(session).to.exist;
           expect(session).to.be.an('object');
           expect(session.hash).to.exist;
@@ -480,7 +481,7 @@ describe('', function () {
     });
   });
 
-  xdescribe('Sessions and cookies', function () {
+  describe('Sessions and cookies', function () {
     var requestWithSession;
     var cookieJar;
 
@@ -521,6 +522,7 @@ describe('', function () {
       requestWithSession('http://127.0.0.1:4568/', function (error, res, body) {
         if (error) { return done(error); }
         var cookies = cookieJar.getCookies('http://127.0.0.1:4568/');
+        console.log('cookie jar: ', cookies);
         expect(cookies.length).to.equal(1);
         done();
       });
